@@ -1,0 +1,47 @@
+## Fichiers de construction (Gradle) ##
+/build
+.gradle
+
+# Cache de l'IDE
+.idea/caches
+.idea/libraries
+.idea/vcs.xml
+.idea/workspace.xml
+# Si vous utilisez le dossier .idea pour la configuration locale
+.idea/
+!.idea/*.iml
+!.idea/codeStyles
+!.idea/inspectionProfiles
+
+# Fichiers de configuration IntelliJ spécifiques à l'utilisateur
+*.iml
+*.iws
+*.ipr
+
+## Fichiers Générés par Spring Boot ##
+# Fichiers JAR/WAR créés par la tâche bootJar/jar
+*.jar
+*.war
+*.zip
+*.tar
+*.log
+!**/src/main/**/resources/**.properties
+!**/src/main/**/resources/**.yml
+
+## Dépendances Locales ##
+# Dépendances téléchargées localement
+/lib/
+/target/
+
+## Fichiers du Système d'Exploitation ##
+# MacOS
+.DS_Store
+# Windows
+Thumbs.db
+
+## Fichiers Log ##
+/log/
+*.log
+
+# Pour les fichiers spécifiques à Spring
+/temp
