@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: native
+  application:
+    name: product-composite-service
+
+server:
+  port: 7001
+
+---
+
+spring:
+  profiles:
+    active: docker
+
+server:
+  port: 8080
