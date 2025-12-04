@@ -1,4 +1,4 @@
-package org.example.reviewservice.models;
+package org.example.reviewservice.model;
 
 public class Review {
     int productId;
