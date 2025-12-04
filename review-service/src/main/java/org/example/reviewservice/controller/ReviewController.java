@@ -1,6 +1,6 @@
-package org.example.reviewservice.Controller;
+package org.example.reviewservice.controller;
 
-import org.example.reviewservice.models.Review;
+import org.example.reviewservice.model.Review;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
