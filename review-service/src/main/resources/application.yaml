@@ -1,4 +1,17 @@
-server.port: 7003
+spring:
+  profiles:
+    active: native
+  application:
+    name: review-service
+
+server:
+  port: 7004
+
 ---
-spring.config.activate.on-profile: docker
-server.port: 8080
+
+spring:
+  profiles:
+    active: docker
+
+server:
+  port: 8080
