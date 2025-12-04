@@ -3,6 +3,7 @@ package org.example.productcompositeservice.controller;
 import org.example.productcompositeservice.model.ProductComposite;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,12 @@ public class ProductCompositeController {
     }
 
     @GetMapping("/{productId}")
-    public ProductComposite getProductComposite(int productId) {
+    public ProductComposite getProductComposite(
+            @PathVariable("productId") Integer productId) {
+        if (productId == null) {
+            throw new IllegalArgumentException("Product ID must not be null");
+        }
+
         return productCompositeIntegration.getProductComposite(productId);
     }
 }

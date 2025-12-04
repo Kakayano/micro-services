@@ -1,9 +1,9 @@
 package org.example.productcompositeservice.controller;
 
 import org.example.productcompositeservice.model.ProductComposite;
-import org.example.productservice.model.Product;
-import org.example.recommendationservice.model.Recommendation;
-import org.example.reviewservice.models.Review;
+import org.example.productcompositeservice.model.Product;
+import org.example.productcompositeservice.model.Recommendation;
+import org.example.productcompositeservice.model.Review;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
