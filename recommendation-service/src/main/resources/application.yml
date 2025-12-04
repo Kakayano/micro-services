@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: native
+  application:
+    name: recommendation-service
+
+server:
+  port: 7003
+
+---
+
+spring:
+  profiles:
+    active: docker
+
+server:
+  port: 8080

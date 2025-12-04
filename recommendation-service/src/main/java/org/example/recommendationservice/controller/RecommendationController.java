@@ -13,6 +13,7 @@ public class RecommendationController {
 
     private final AtomicInteger nextId = new AtomicInteger(100);
 
+
     @GetMapping("/recommendation")
     public Flux<Recommendation> getRecommendations(@RequestParam(value = "productId", required = true) int productId) {
 
