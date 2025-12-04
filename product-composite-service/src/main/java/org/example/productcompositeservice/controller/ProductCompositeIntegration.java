@@ -1,50 +1,32 @@
 package org.example.productcompositeservice.controller;
 
+import org.example.productcompositeservice.model.ProductComposite;
 import org.example.productservice.model.Product;
 import org.example.recommendationservice.model.Recommendation;
 import org.example.reviewservice.models.Review;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+import java.util.Objects;
+
+@Service
 public class ProductCompositeIntegration {
-    private final WebClient webClient;
-
-    // Utilisez l'injection de dépendances (Dependency Injection) si vous configurez WebClient
-    // Sinon, instanciez-le directement.
-    public ProductCompositeIntegration() {
-        this.webClient = WebClient.builder().build();
-    }
-
-    // Appel 1 : Récupérer les informations Produit (simulé ici, à adapter)
-    public Flux<Product> getProduct(int productId) {
-        String url = "http://localhost:7002/recommendation/" + productId;
+    private final RestTemplate restTemplate = new RestTemplate();
+    private static final String ProductUrl = "http://localhost:7002/product/";
+    private static final String ReviewUrl = "http://localhost:7004/review/";
+    private static final String RecommendationUrl = "http://localhost:7003/recommendation?productId=";
 
 
-        // Puisque nous n'avons pas la BDD, supposons que l'objet Product est retourné.
-        return webClient.get().uri(url)
-                .retrieve()
-                .bodyToFlux(Product.class)
-                .onErrorResume(e -> Flux.empty());
-    }
+    public ProductCompositeIntegration() {}
 
-    // Appel 2 : Récupérer les Recommandations
-    public Flux<Recommendation> getRecommendations(int productId) {
-        String url = "http://localhost:7003/recommendation?productId=" + productId;
+    public ProductComposite getProductComposite(int productId) {
+        Product product = restTemplate.getForObject(ProductUrl + productId, Product.class);
+        List<Review> reviews = List.of(Objects.requireNonNull(restTemplate.getForObject(ReviewUrl + productId, Review[].class)));
+        List<Recommendation> recommendations = List.of(Objects.requireNonNull(restTemplate.getForObject(RecommendationUrl + productId, Recommendation[].class)));
 
-        return webClient.get().uri(url)
-                .retrieve()
-                .bodyToFlux(Recommendation.class)
-                .onErrorResume(e -> Flux.empty()); // Retourne vide si l'appel échoue
-    }
-
-    // Appel 3 : Récupérer les Avis (similaire à l'appel Recommandation)
-    public Flux<Review> getReviews(int productId) {
-        // L'URL du service Review est http://localhost:7004/review (à définir dans le service Review)
-        String url = "http://localhost:7004/review?productId=" + productId;
-
-        return webClient.get().uri(url)
-                .retrieve()
-                .bodyToFlux(Review.class)
-                .onErrorResume(e -> Flux.empty()); // Retourne vide si l'appel échoue
+        return new ProductComposite(product, reviews, recommendations);
     }
 }
+
+

@@ -7,8 +7,8 @@ import org.example.reviewservice.models.Review;
 
 import java.util.List;
 
-public class ProductComposite {
-    private Product product;
-    private List<Review> reviews;
-    private List<Recommendation> recommendations;
-}
+public record ProductComposite (
+     Product product,
+     List<Review> reviews,
+     List<Recommendation> recommendations
+) {};
