@@ -2,10 +2,7 @@ package org.example.productcompositeservice.controller;
 
 import org.example.productcompositeservice.model.ProductComposite;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/product-composite")
@@ -25,4 +22,15 @@ public class ProductCompositeController {
 
         return productCompositeIntegration.getProductComposite(productId);
     }
+
+    @PostMapping()
+    public void createComposite(@RequestBody ProductComposite body) {
+        productCompositeIntegration.createCompositeProduct(body);
+    }
+
+    @DeleteMapping("/{productId}")
+    public void deleteComposite(@PathVariable int productId) {
+        productCompositeIntegration.deleteCompositeProduct(productId);
+    }
+
 }

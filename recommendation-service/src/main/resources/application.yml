@@ -20,8 +20,6 @@ spring:
     activate:
       on-profile: docker
   mongodb:
-    host: mongodb
-    port: 27017
-    database: recommendation-db
+    uri: ${SPRING_DATA_MONGODB_URI}
 server:
   port: 8080
