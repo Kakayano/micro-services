@@ -66,8 +66,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(Integer reviewId) {
-        reviewRepository.deleteById(reviewId);
+    public void deleteAllReviews(Integer productId) {
+        reviewRepository.deleteAll(reviewRepository.findByProductId(productId));
     }
 }
 
