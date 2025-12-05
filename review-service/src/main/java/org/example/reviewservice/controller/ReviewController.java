@@ -1,33 +1,61 @@
 package org.example.reviewservice.controller;
 
 import org.example.reviewservice.model.Review;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.example.reviewservice.service.ReviewService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequestMapping("/review")
 public class ReviewController {
 
-    public final static List<Review> REVIEWS = Arrays.asList(
-            new Review(1, 1, "Author 1", "Subject 1", "Content 1"),
-            new Review(1, 2, "Author 2", "Subject 2", "Content 2"),
-            new Review(2, 1, "Author 3", "Subject 3", "Content 3")
-    );
+    private final ReviewService reviewService;
+
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
 
     @GetMapping("/{productId}")
-    public List<Review> getReviews(@PathVariable int productId) {
-        List<Review> reviews = new ArrayList<Review>();
-        for (Review review : REVIEWS) {
-            if (review.getProductId() == productId) {
-                reviews.add(review);
-            }
+    public ResponseEntity<List<Review>> getReviews(@PathVariable int productId) {
+        List<Review> reviews = reviewService.getReviewsByProductId(productId);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Review>> getAllReviews() {
+        List<Review> reviews = reviewService.getAllReviews();
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/detail/{reviewId}")
+    public ResponseEntity<Review> getReviewById(@PathVariable int reviewId) {
+        return reviewService.getReviewById(reviewId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Review> createReview(@RequestBody Review review) {
+        Review createdReview = reviewService.createReview(review);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
+    }
+
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<Review> updateReview(@PathVariable int reviewId, @RequestBody Review review) {
+        try {
+            Review updatedReview = reviewService.updateReview(reviewId, review);
+            return ResponseEntity.ok(updatedReview);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
-        return reviews;
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> deleteReview(@PathVariable int reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ResponseEntity.noContent().build();
     }
 }
