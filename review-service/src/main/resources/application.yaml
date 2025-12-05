@@ -1,8 +1,22 @@
 spring:
-  profiles:
-    active: native
   application:
     name: review-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/reviewdb?createDatabaseIfNotExist=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: never  # Changez à 'always' pour initialiser les données au démarrage
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
 
 server:
   port: 7004
@@ -10,8 +24,17 @@ server:
 ---
 
 spring:
-  profiles:
-    active: docker
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:mysql://mysql:3306/reviewdb?createDatabaseIfNotExist=true
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
 server:
   port: 8080
