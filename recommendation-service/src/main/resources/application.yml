@@ -1,17 +1,27 @@
 spring:
   profiles:
     active: native
-  application:
-    name: recommendation-service
 
+---
+spring:
+  config:
+    activate:
+      on-profile: native
+  mongodb:
+    host: localhost
+    port: 27017
+    database: recommendation-db
 server:
   port: 7003
 
 ---
-
 spring:
-  profiles:
-    active: docker
-
+  config:
+    activate:
+      on-profile: docker
+  mongodb:
+    host: mongodb
+    port: 27017
+    database: recommendation-db
 server:
   port: 8080
