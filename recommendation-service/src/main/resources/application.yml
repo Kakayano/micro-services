@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    active: native
+  application:
+    name: recommendation-service
 
 ---
 spring:
@@ -11,6 +11,12 @@ spring:
     host: localhost
     port: 27017
     database: recommendation-db
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
 server:
   port: 7003
 
@@ -21,5 +27,11 @@ spring:
       on-profile: docker
   mongodb:
     uri: ${SPRING_DATA_MONGODB_URI}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
+
 server:
   port: 8080

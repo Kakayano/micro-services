@@ -3,6 +3,7 @@ package org.example.productcompositeservice.controller;
 import org.example.productcompositeservice.model.ProductComposite;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/product-composite")
@@ -14,7 +15,7 @@ public class ProductCompositeController {
     }
 
     @GetMapping("/{productId}")
-    public ProductComposite getProductComposite(
+    public Mono<ProductComposite> getProductComposite(
             @PathVariable("productId") Integer productId) {
         if (productId == null) {
             throw new IllegalArgumentException("Product ID must not be null");
@@ -24,13 +25,13 @@ public class ProductCompositeController {
     }
 
     @PostMapping()
-    public void createComposite(@RequestBody ProductComposite body) {
-        productCompositeIntegration.createCompositeProduct(body);
+    public Mono<Void> createComposite(@RequestBody ProductComposite body) {
+        return productCompositeIntegration.createCompositeProduct(body);
     }
 
     @DeleteMapping("/{productId}")
-    public void deleteComposite(@PathVariable int productId) {
-        productCompositeIntegration.deleteCompositeProduct(productId);
+    public Mono<Void> deleteComposite(@PathVariable int productId) {
+        return productCompositeIntegration.deleteCompositeProduct(productId);
     }
 
 }

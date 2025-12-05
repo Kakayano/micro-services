@@ -2,6 +2,16 @@ version: "3.9"
 
 services:
 
+  eureka:
+    build: ./eureka-server
+    container_name: eureka
+    hostname: eureka
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+
   # -------------------------
   #   MySQL (Review service)
   # -------------------------
@@ -42,36 +52,42 @@ services:
   # -------------------------
   product-service:
     build: ./product-service
-    ports:
-      - "7002:8080"
+#    ports:
+#      - "7002:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/product-db
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
     depends_on:
       mongo:
         condition: service_healthy
+      eureka:
+        condition: service_started
+
 
   # -------------------------
   #   Recommendation-service
   # -------------------------
   recommendation-service:
     build: ./recommendation-service
-    ports:
-      - "7003:8080"
+#    ports:
+#      - "7003:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/recommendation-db
     depends_on:
       mongo:
         condition: service_healthy
+      eureka:
+        condition: service_started
 
   # -------------------------
   #   Review-service
   # -------------------------
   review-service:
     build: ./review-service
-    ports:
-      - "7004:8080"
+#    ports:
+#      - "7004:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/reviewdb
@@ -80,6 +96,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      eureka:
+        condition: service_started
 
   # -------------------------
   #   Product Composite
@@ -96,6 +114,8 @@ services:
       recommendation-service:
         condition: service_started
       review-service:
+        condition: service_started
+      eureka:
         condition: service_started
 
 # -----------------------------------------
