@@ -13,9 +13,9 @@ import java.util.Objects;
 @Service
 public class ProductCompositeIntegration {
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String ProductUrl = "http://product-service:8080/product";
-    private static final String ReviewUrl = "http://review-service:8080/review";
-    private static final String RecommendationUrl = "http://recommendation-service:8080/recommendation";
+    private static final String ProductUrl = "http://product-service/product";
+    private static final String ReviewUrl = "http://review-service/review";
+    private static final String RecommendationUrl = "http://recommendation-service/recommendation";
 
 
     public ProductCompositeIntegration() {}

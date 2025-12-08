@@ -1,4 +1,4 @@
-FROM eclipse-temurin:24_36-jre-noble AS builder
+    FROM eclipse-temurin:24_36-jre-noble AS builder
 WORKDIR /extracted
 ADD ./build/libs/*.jar app.jar
 RUN java -Djarmode=layertools -jar app.jar extract

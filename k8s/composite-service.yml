@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-composite-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-composite-service
+  template:
+    metadata:
+      labels:
+        app: product-composite-service
+    spec:
+      containers:
+        - name: product-composite-service
+          image: kakayano27/product-composite-service:2.0 # Remplacer par votre image
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+          # Dans votre code Java, assurez-vous qu'il appelle "http://product-service" (port 80)
+          # et non plus "localhost" ou des ports spécifiques comme 7002.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-composite-service
+spec:
+  type: NodePort  # <--- C'est ici que la magie opère
+  selector:
+    app: product-composite-service
+  ports:
+    - port: 8080        # Port du service à l'intérieur du cluster
+      targetPort: 8080  # Port du conteneur Spring Boot
+      nodePort: 30001   # Port accessible depuis l'extérieur (entre 30000 et 32767)

@@ -1,0 +1,122 @@
+# --- PRODUCT SERVICE ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+        - name: product-service
+          image: kakayano27/product-service:1.0 # Remplacer par votre image
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://mongo:27017/product-db" # 'mongo' est le nom du Service K8s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  ports:
+    - port: 80       # Port exposé en interne
+      targetPort: 8080 # Port de votre Spring Boot
+  selector:
+    app: product-service
+  type: ClusterIP
+
+# --- RECOMMENDATION SERVICE ---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: recommendation-service
+  template:
+    metadata:
+      labels:
+        app: recommendation-service
+    spec:
+      containers:
+        - name: recommendation-service
+          image: kakayano27/recommendation-service:2.0 # Remplacer par votre image
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://mongo:27017/recommendation-db"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendation-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: recommendation-service
+  type: ClusterIP
+
+# --- REVIEW SERVICE ---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: review-service
+  template:
+    metadata:
+      labels:
+        app: review-service
+    spec:
+      containers:
+        - name: review-service
+          image: kakayano27/review-service:1.0 # Remplacer par votre image
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql:3306/reviewdb" # 'mysql' est le nom du Service K8s
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "root"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: review-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: review-service
+  type: ClusterIP
