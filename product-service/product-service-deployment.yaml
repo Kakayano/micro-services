@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service-deployment
+spec:
+  replicas: 2 # Kubernetes créera 2 pods pour ce service (haute dispo)
+  selector:
+    matchLabels:
+      app: product-service # Label pour lier au Service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+        - name: product-service
+          image: xamflex6/product-service:1.0 # Votre image créée à l'étape 1
+          ports:
+            - containerPort: 8080 # Le port sur lequel votre Spring Boot/Java écoute
