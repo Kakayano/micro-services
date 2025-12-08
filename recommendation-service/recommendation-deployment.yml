@@ -13,7 +13,7 @@ spec:
         app: recommendation-service
     spec:
       containers:
-        - name: service-a
+        - name: recommendation-service
           image: kakayano27/recommendation-service:1.0
           ports:
             - containerPort: 8080
