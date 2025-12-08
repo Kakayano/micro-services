@@ -1,46 +1,49 @@
-name: Build & Push Microservice
+name: Build & Push TOUS les Microservices (Matrice)
 
 on:
   workflow_dispatch:
     inputs:
-      service_name:
-        description: 'Quel microservice builder ?'
-        required: true
-        default: 'product-service'
-        type: choice
-        options:
+      docker_tag:
+        description: 'Tag de l image (défaut: 3.0)'
+        required: false
+        default: '3.0'
+
+jobs:
+  build-and-push:
+    # 1. Définition de la Matrice
+    strategy:
+      matrix:
+        # Liste de tous les dossiers/noms de services à construire
+        service:
           - product-service
           - recommendation-service
           - review-service
           - product-composite-service
-      docker_tag:
-        description: 'Tag de l image (défaut: 1.0)'
-        required: false
-        default: '1.0'
+      fail-fast: false # Permet aux autres builds de continuer même si un échoue
 
-jobs:
-  build-and-push:
+    # Chaque job s'appellera avec le nom du service
+    name: Build ${{ matrix.service }}
     runs-on: ubuntu-latest
-    
-    # Définit le dossier de travail sur le service choisi
+
+    # Le dossier de travail est maintenant défini par la matrice
     defaults:
       run:
-        working-directory: ./${{ inputs.service_name }}
+        working-directory: ./${{ matrix.service }}
 
     steps:
       # 1. Récupération du code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Installation du JDK (Version 17 par exemple, à adapter selon tes besoins)
+      # 2. Installation du JDK
       - name: Set up JDK 17
         uses: actions/setup-java@v5.1.0
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle' # Cache les dépendances pour aller plus vite
+          cache: 'gradle'
 
-      # 3. Rendre le wrapper Gradle exécutable (par sécurité)
+      # 3. Rendre le wrapper Gradle exécutable
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -48,24 +51,24 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      # 5. Configuration de QEMU/Buildx (nécessaire pour build-push-action)
+      # 5. Configuration de QEMU/Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 6. Connexion au registre Docker (Hub, GHCR, etc.)
+      # 6. Connexion au registre Docker (Utilisation de secrets)
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          password: ${{ secrets.DOCKER_PASSWORD }} # Utilise un Access Token pour la sécurité
 
       # 7. Construction de l'image Docker et Push
-      # On suppose que le Dockerfile est à la racine du dossier du service
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ inputs.service_name }}
-          file: ./${{ inputs.service_name }}/Dockerfile
+          # Les variables de contexte et de fichier utilisent ${{ matrix.service }}
+          context: ./${{ matrix.service }}
+          file: ./${{ matrix.service }}/Dockerfile
           push: true
-          # Adapte "mon-user" par ton nom d'utilisateur Docker Hub
-          tags: ${{ secrets.DUCKER_USERNAME }}/${{ inputs.service_name }}:${{ inputs.docker_tag }}
+          # Utilise le tag défini dans l'input manuel, et l'utilisateur Docker depuis un secret
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.event.inputs.docker_tag }}
