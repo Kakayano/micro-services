@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-composite-service-deployment
+spec:
+  replicas: 2 # Kubernetes créera 2 pods pour ce service (haute dispo)
+  selector:
+    matchLabels:
+      app: product-composite-service # Label pour lier au Service
+  template:
+    metadata:
+      labels:
+        app: product-composite-service
+    spec:
+      containers:
+        - name: product-composite-service
+          image: tarros/product-composite-service:1.0
+          ports:
+            - containerPort: 8080 # Port exposé par le conteneur
