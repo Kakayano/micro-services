@@ -1,21 +1,2 @@
-spring:
-  profiles:
-    active: native
-
----
-spring:
-  config:
-    activate:
-      on-profile: native
-
 server:
-  port: 7001
-
----
-spring:
-  config:
-    activate:
-      on-profile: docker
-
-server:
-  port: 8080
+  port: ${SERVER_PORT:7001}

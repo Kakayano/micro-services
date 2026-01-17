@@ -1,25 +1,5 @@
 spring:
-  profiles:
-    active: native
-
----
-spring:
-  config:
-    activate:
-      on-profile: native
   mongodb:
-    host: localhost
-    port: 27017
-    database: recommendation-db
+    uri: mongodb://${MONGODB_HOST:localhost}:27017/product-db
 server:
-  port: 7002
-
----
-spring:
-  config:
-    activate:
-      on-profile: docker
-  mongodb:
-    uri: ${SPRING_DATA_MONGODB_URI}
-server:
-  port: 8080
+  port: ${SERVER_PORT:7003}
