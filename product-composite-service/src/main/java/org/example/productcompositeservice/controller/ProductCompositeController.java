@@ -1,7 +1,6 @@
 package org.example.productcompositeservice.controller;
 
 import org.example.productcompositeservice.model.ProductComposite;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,7 +22,7 @@ public class ProductCompositeController {
         return productCompositeIntegration.getProductComposite(productId);
     }
 
-    @PostMapping()
+    @PostMapping({"", "/"})
     public void createComposite(@RequestBody ProductComposite body) {
         productCompositeIntegration.createCompositeProduct(body);
     }
