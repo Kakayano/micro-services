@@ -9,6 +9,17 @@ Le système est composé de micro-services qui exposent des fonctionnalités pro
 - Recommendation Service: gestion des recommandations (MongoDB)
 - Product Composite Service: agrégation réactive des trois services via WebClient
 
+```mermaid
+flowchart LR
+    FE[Frontend / API Client] -->|HTTP| PC[Product Composite Service]
+    PC -->|HTTP| PS[Product Service]
+    PC -->|HTTP| RS[Review Service]
+    PC -->|HTTP| RecS[Recommendation Service]
+    RS -->|JPA| MySQL[(MySQL)]
+    RecS -->|MongoRepository| Mongo[(MongoDB)]
+    PS -->|Repository| DB[(Relational DB)]
+```
+
 ## Flux fonctionnels
 ### Lecture d’un produit consolidé
 1. Client appelle `GET /product-composite/{productId}`
@@ -44,33 +55,9 @@ Le système est composé de micro-services qui exposent des fonctionnalités pro
 - Les services sont définis avec leurs images et réseaux; Review dépend de MySQL et Recommendation de MongoDB.
 - Le Product Composite résout les services via leurs hôtes (ex: `http://product-service/product`).
 
-## Sécurité et propagation des identités
-- Dans l’état actuel, pas d’authentification intégrée visible dans le code du Product Composite et Product Service.
-- En production, une gateway ou un filtre serait responsable de la validation JWT (Keycloak) et de la propagation des claims aux micro-services.
-
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant G as API Gateway
-    participant KC as Keycloak
-    participant PC as Product Composite
-    participant PS as Product Service
-    participant RS as Review Service
-    participant Rec as Recommendation Service
-
-    C->>KC: Authenticate (OIDC)
-    KC-->>C: ID token + Access token (JWT)
-    C->>G: GET /product-composite/{id} + Bearer JWT
-    G->>PC: Forward request + validated JWT
-    PC->>PS: GET /product/{id}
-    PC->>RS: GET /review/{id}
-    PC->>Rec: GET /recommendation?productId={id}
-    PS-->>PC: Product
-    RS-->>PC: Reviews
-    Rec-->>PC: Recommendations
-    PC-->>G: ProductComposite
-    G-->>C: 200 OK
-```
+## Sécurité
+- Aucune authentification ou autorisation n’est mise en place dans ce projet.
+- Les échanges entre services se font sur le réseau interne sans propagation de jetons ni filtres d’authentification.
 
 ## Points d’attention
 - Résilience: prévoir timeouts, retries, circuit breakers pour les appels inter-services

@@ -48,7 +48,8 @@ Base path: `/product`
 - `deleteProduct(int)` → `delete(repository.findByProductId(productId))`
 
 ## Sécurité
-- Aucun mécanisme d'authentification/autorisation intégré dans ce service. À protéger via gateway et propagation de JWT si nécessaire.
+- Ce projet ne met en place aucun mécanisme d'authentification ou d'autorisation au niveau du Product Service.
+- Les appels au service se font sans authentification.
 
 ## Tests
 - Tests non visibles dans les extraits fournis pour `product-service`. Recommandations:

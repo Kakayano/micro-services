@@ -54,7 +54,8 @@ Base path: `/product-composite`
   - Supprime produit, recommandations et reviews (par productId)
 
 ## Sécurité
-- Ce service ne fait pas d'authentification directe. Dans une architecture complète, il est typiquement protégé par une gateway et/ou des filtres qui propagent le JWT vers les services ciblés. Les IDs utilisateurs (si utilisés dans Review/Recommendation) seraient transmis dans les payloads ou headers.
+- Ce projet ne met en place aucun mécanisme d'authentification ou d'autorisation au niveau du Product Composite Service.
+- Les appels inter-services sont effectués sur le réseau interne sans propagation de jetons.
 
 ## Tests
 - `ProductCompositeServiceApplicationTests` (SpringBootTest): test de contexte chargé. Tests unitaires spécifiques aux intégrations HTTP ne sont pas présents dans le projet au moment de la rédaction.
