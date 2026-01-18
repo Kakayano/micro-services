@@ -1,17 +1,22 @@
 # Product Composite Service — Documentation technique
 
-## Vue d'ensemble
-Le service Product Composite agrège les données des micro-services Product, Review et Recommendation pour exposer une vue consolidée d'un produit. Il utilise Spring WebFlux (WebClient) et un style réactif pour composer des appels parallèles.
+## Nom et description
+- Nom: Product Composite Service
+- Description: Agrège les données des micro-services Product, Review et Recommendation pour exposer une vue consolidée d'un produit via une API réactive.
+
+## Installation et exécution
+- Dépendances: Spring Boot, Spring WebFlux, découverte de services (EnableDiscoveryClient)
+- Démarrage: via Docker Compose ou Gradle (voir `product-composite-service/Dockerfile` et `docker-compose.yaml` du projet racine)
 
 ## Architecture (Hexagonale)
 - API (Controller): `ProductCompositeController`
 - Domaine/DTO: `ProductComposite`, `Product`, `Review`, `Recommendation`
-- Adapter sortant (HTTP clients): `ProductCompositeIntegration` via `WebClient`
-- Infrastructure: configuration Spring Boot, découverte de services (EnableDiscoveryClient)
+- Adapter sortant (HTTP clients): `ProductCompositeIntegration` (WebClient)
+- Infrastructure: Configuration Spring Boot, découverte de services
 
 ```mermaid
 flowchart LR
-    FE[Frontend] -->|GET/POST/DELETE| PC[Product Composite Service]
+    FE[Frontend] -->|GET /POST /DELETE| PC[Product Composite Service]
     PC -->|GET /product/{id}\nPOST /product\nDELETE /product/{id}| P[Product Service]
     PC -->|GET/POST/DELETE /recommendation| R[Recommendation Service]
     PC -->|GET/POST/DELETE /review| RV[Review Service]
@@ -28,7 +33,7 @@ Base path: `/product-composite`
 
 - GET `/{productId}`
   - Réponse: `ProductComposite`
-  - Agrège: `GET product-service/product/{productId}`, `GET recommendation-service/recommendation?productId=...`, `GET review-service/review/{productId}`
+  - Agrège: `GET product-service/product/{productId}`, `GET recommendation-service/recommendation?productId={productId}`, `GET review-service/review/{productId}`
 
 - POST `/`
   - Corps: `ProductComposite`
@@ -40,7 +45,7 @@ Base path: `/product-composite`
 - DELETE `/{productId}`
   - Effets:
     - `DELETE product-service/product/{productId}`
-    - `DELETE recommendation-service/recommendation?productId=...`
+    - `DELETE recommendation-service/recommendation?productId={productId}`
     - `DELETE review-service/review/{productId}`
 
 ## Intégration et flux

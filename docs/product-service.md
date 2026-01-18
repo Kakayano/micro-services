@@ -1,7 +1,12 @@
 # Product Service — Documentation technique
 
-## Vue d'ensemble
-Le service Product expose une API CRUD pour gérer les produits. Il s'appuie sur Spring Boot et une couche de persistance via un repository et un mapper.
+## Nom et description
+- Nom: Product Service
+- Description: Fournit une API CRUD pour la gestion des produits.
+
+## Installation et exécution
+- Dépendances: Spring Boot
+- Démarrage: via Docker Compose ou Gradle (voir `product-service/Dockerfile` et `docker-compose.yaml` du projet racine)
 
 ## Architecture (Hexagonale)
 - API (Controller): `ProductController`
@@ -12,45 +17,45 @@ Le service Product expose une API CRUD pour gérer les produits. Il s'appuie sur
 ```mermaid
 flowchart LR
     FE[Frontend] -->|CRUD| PS[Product Service]
-    PS -->|DB CRUD| DB[(Database)]
+    PS -->|CRUD DB| DB[(Database)]
 ```
 
 ## Modèle de données
 - `Product`: `{ productId: int, name: String, weight: int }`
-- `ProductEntity` (persistance): représente la table en base (voir `persistence/ProductEntity.java`)
+- `ProductEntity`: entité de persistance correspondant à la table associée
 
 ## API Reference
 Base path: `/product`
 
-- GET `/` → Liste des produits
+- GET `/`
   - Réponse: `List<Product>`
 
-- GET `/{productId}` → Détail d'un produit
+- GET `/{productId}`
   - Réponse: `Product`
 
-- POST `/` → Créer un produit
+- POST `/`
   - Corps: `Product`
   - Réponse: `Product` créé
 
-- DELETE `/{productId}` → Supprimer un produit
-  - Effet: suppression en base via `ProductRepository`
+- DELETE `/{productId}`
+  - Effet: suppression de l'entité correspondant au `productId`
 
 ## Logique de service
 `ProductServiceImpl`:
-- `createProduct(Product)` → map vers `ProductEntity`, `save`, remap vers API
+- `createProduct(Product)` → mapping vers `ProductEntity`, `save`, remap vers API
 - `getProducts()` → `findAll()` puis mapping liste
 - `getProduct(int)` → `findByProductId(productId)` puis mapping
 - `deleteProduct(int)` → `delete(repository.findByProductId(productId))`
 
 ## Sécurité
-- Aucun mécanisme d'authentification/autorisation intégré dans ce service au moment de l'analyse. À protéger via gateway ou filtres (JWT) si requis.
+- Aucun mécanisme d'authentification/autorisation intégré dans ce service. À protéger via gateway et propagation de JWT si nécessaire.
 
 ## Tests
-- Les tests ne sont pas visibles dans les extraits fournis pour `product-service`. Ajouter idéalement:
+- Tests non visibles dans les extraits fournis pour `product-service`. Recommandations:
   - Tests unitaires du mapper
   - Tests du service avec repository mocké
   - Tests d'intégration du controller (WebMvcTest)
 
 ## Points d'attention
-- Gestion des erreurs dans `getProduct(int)` si produit non trouvé (null handling).
-- Valider inputs dans `POST` (ex. champs obligatoires, types).
+- Gestion d'erreur si `getProduct(int)` ne trouve pas l'entité (null/404).
+- Validation des inputs pour `POST` (ex. `name`, `weight`).
