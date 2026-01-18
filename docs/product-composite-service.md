@@ -14,14 +14,6 @@
 - Adapter sortant (HTTP clients): `ProductCompositeIntegration` (WebClient)
 - Infrastructure: Configuration Spring Boot, découverte de services
 
-```mermaid
-flowchart LR
-    FE[Frontend] -->|GET /POST /DELETE| PC[Product Composite Service]
-    PC -->|GET /product/{id}\nPOST /product\nDELETE /product/{id}| P[Product Service]
-    PC -->|GET/POST/DELETE /recommendation| R[Recommendation Service]
-    PC -->|GET/POST/DELETE /review| RV[Review Service]
-```
-
 ## Modèle de données (DTO)
 - `ProductComposite` record: `{ product: Product, reviews: List<Review>, recommendations: List<Recommendation> }`
 - `Product`: `{ productId: int, name: String, weight: int }`
